@@ -1,0 +1,15 @@
+{
+  "name": "template_ses_email_templates",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "aws ses create-template --cli-input-json file://WelcomeTemplate.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.645.0"
+  }
+}
