@@ -3,6 +3,9 @@ const config = require ('./config');
 const welcome = require('./emailTemplates/SMT-welcomeEmail').welcomeEmail();
 const usernameReminder = require('./emailTemplates/SMT-usernameReminder').usernameReminder();
 const passwordReset = require('./emailTemplates/SMT_resetPassword').passwordReset();
+const TS_Co_Uk_welcome = require('./emailTemplates/tutorSeekersCoUk_welcomeEmail').tutorSeekersWelcomeEmail();
+const TS_Co_Uk_passwordReset = require('./emailTemplates/tutorSeekersCoUk_resetPassword').tutorSeekersPasswordReset();
+const TS_Co_Uk_reference = require('./emailTemplates/tutorSeekersCoUk_referenceEmail').tutorSeekersReferenceEmail();
 
 AWS.config.update({
     accessKeyId: config.aws.key,
@@ -144,23 +147,29 @@ const processing = async () => {
         
         const ses = new AWS.SES({apiVersion: '2010-12-01'});
 
-        const noOfTemplaysToDisplay = 5;
+        const noOfTemplaysToDisplay = 10;
         res = await listTemplates(ses, noOfTemplaysToDisplay);
         console.log ('List Names' );
         console.log (res);
 
-        // res = await getTemplate(ses, 'SendUsername-20200505032842');
+        // res = await deleteTemplate(ses, 'tutorSeekersCoUk_referenceEmail' );
+        // console.log (res);
+
+
+        // res = await getTemplate(ses, 'WelcomeEmail-20201130023735');
         // console.log ('Get Template' );
         // console.log (res);
 
         // const template  = welcome;
         // const template  = usernameReminder;
-        const template  = passwordReset;
+        // const template  = passwordReset;
 
+
+        const template  = TS_Co_Uk_welcome
+        // const template  = TS_Co_Uk_reference
+        // const template  = TS_Co_Uk_passwordReset
         res = await deleteTemplate(ses, template.templateName );
         console.log (res);
-
-        console.log (`Template name : ${template.templateName}`);
         res = await createTemplate(ses, template.templateName, template.subjectPart, template.htmlPart, template.TextPart);
         console.log ('Get Template' );
         console.log (res);

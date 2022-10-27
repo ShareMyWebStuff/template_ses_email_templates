@@ -44,10 +44,7 @@ const templateTest = {
         Template: "SMT_PasswordReset",
         TemplatedataObj: {
             name: 'Dave',
-            verificationCode: '12345',
             resetCode: '67890',
-            username: 'Username',
-            password: 'Sybase01',
             websiteName: 'ShareMyTutoring',
             domainName: 'http://localhost:3000',
             supportEmail: 'support@sharemytutoring.com'
@@ -60,13 +57,86 @@ const templateTest = {
         TemplatedataObj: {
         }
     },
+    TutorSeekersWelcomeEmail: {
+        to: 'dave@harmonydata.co.uk',
+        source: '"sharemytutoring.com" <noreply@sharemytutoring.com>',
+        Template: "TutorSeekers_WelcomeEmail",
+        TemplatedataObj: {
+            name: 'Dave',
+            verificationCode: '12345',
+            email: 'support@tutorseekers.co.uk',
+            password: 'Sybase01',
+            websiteName: 'TutorSeekers',
+            domainName: 'http://localhost:3000',
+            supportEmail: 'support@tutorseekers.co.uk'
+        }
+    },
+    TutorSeekersCoUkWelcomeEmail: {
+        to: 'dave@harmonydata.co.uk',
+        source: '"tutorseekers.co.uk" <noreply@tutorseekers.co.uk>',
+        Template: "TutorSeekersCoUk_WelcomeEmail",
+        TemplatedataObj: {
+            name: 'Dave',
+            verificationCode: '12345',
+            email: 'support@tutorseekers.co.uk',
+            password: 'Sybase01',
+            websiteName: 'TutorSeekers',
+            domainName: 'http://localhost:3000',
+            supportEmail: 'support@tutorseekers.co.uk'
+        }
+    },
+    TutorSeekersCoUkPasswordReset: {
+        to: 'dave@harmonydata.co.uk',
+        source: '"tutorseekers.co.uk" <noreply@tutorseekers.co.uk>',
+        Template: "TutorSeekersCoUk_PasswordReset",
+        TemplatedataObj: {
+            name: 'Dave',
+            resetCode: '67890',
+            websiteName: 'TutorSeekers',
+            domainName: 'http://localhost:3000',
+            supportEmail: 'support@tutorseekers.co.uk'
+        }
+    },
+    WelcomeTest: {
+        to: 'dave@harmonydata.co.uk',
+        source: '"sharemytutoring.com" <noreply@sharemytutoring.com>',
+        Template: "WelcomeEmail-20201130023735",
+        TemplatedataObj: {
+            name: 'Dave',
+            verificationCode: '12345',
+            email: 'support@tutorseekers.co.uk',
+            password: 'Sybase01',
+            websiteName: 'TutorSeekers',
+            domainName: 'http://localhost:3000',
+            supportEmail: 'support@tutorseekers.co.uk'
+        }
+    },
+    TutorSeekersCoUkReference: {
+        to: 'dave@harmonydata.co.uk',
+        source: '"tutorseekers.co.uk" <noreply@tutorseekers.co.uk>',
+        Template: "tutorSeekersCoUk_referenceEmail",
+        TemplatedataObj: {
+            refereesName: 'Mr Adbul',
+            tutorsName: 'Julie Smith',
+            websiteName: 'TutorSeekers',
+            domainName: 'http://localhost:3000',
+            supportEmail: 'support@tutorseekers.co.uk',
+            verificationCode: '12345'
+        }
+    },
 
+
+    
 };
 
 
 const ses = new AWS.SES({apiVersion: '2010-12-01'});
 
 const sendTemplateEmail = ( ses, params ) => {
+
+    console.log ('PARAMS');
+    console.log (params);
+
     return new Promise ( ( resolve, reject) => {
         ses.sendTemplatedEmail(params, (err, data) => {
             if (err) {
@@ -84,39 +154,52 @@ const sendTemplateEmail = ( ses, params ) => {
 // const sendEmail = async (to, subject, message, from) => {
 const sendEmail = async (template) => {
 
-    const params = {
-        Destination: {
-            ToAddresses: [template.to]
-        },
-        Source: template.source,
-        Template: template.Template, 
-        TemplateData: JSON.stringify(template.TemplatedataObj), 
-        ReplyToAddresses: [
-            template.source
-        ],
-    };
+    try {
+        
+        const params = {
+            Destination: {
+                ToAddresses: [template.to]
+            },
+            Source: template.source,
+            Template: template.Template, 
+            TemplateData: JSON.stringify(template.TemplatedataObj), 
+            ReplyToAddresses: [
+                template.source
+            ],
+        };
 
-    console.log (params);
+        console.log (params);
+        console.log (JSON.stringify(params));
 
-    const res = await sendTemplateEmail( ses, params );
-    console.log (res);
+        const res = await sendTemplateEmail( ses, params );
+        console.log (res);
 
-    // ses.sendTemplatedEmail(params, (err, data) => {
-    //     if (err) {
-    //         return console.log(err, err.stack);
-    //     } else {
-    //         console.log("Email sent.", data);
-    //     }
-    // });
+        // ses.sendTemplatedEmail(params, (err, data) => {
+        //     if (err) {
+        //         return console.log(err, err.stack);
+        //     } else {
+        //         console.log("Email sent.", data);
+        //     }
+        // });
+
+    } catch (err) {
+        console.log ('ERROR - ERROR')
+        console.log (err);
+    }
+
 };
 
 
-// sendEmail('dave@harmonydata.co.uk', "Hey! Welcome", "This is the body of email");
-
 // sendEmail(templateTest['SMT_Welcome']);
-// sendEmail(templateTest['SendUsername-20200505032843']);
 // sendEmail(templateTest['SMT_UsernameReminder']);
-sendEmail(templateTest['SMT_PasswordReset']);
+// sendEmail(templateTest['SMT_PasswordReset']);
+
 // sendEmail(templateTest['Sendusername']);
+
+sendEmail(templateTest['TutorSeekersCoUkWelcomeEmail']);
+// sendEmail(templateTest['TutorSeekersCoUkPasswordReset']);
+// sendEmail(templateTest['TutorSeekersCoUkReference']);
+
+// sendEmail(templateTest['WelcomeTest']);
 
 
